@@ -9,4 +9,4 @@ function establishDBConnection(databaseURL){
   };
 }
 
-modules.export = establishDBConnection;
+module.exports = establishDBConnection;
