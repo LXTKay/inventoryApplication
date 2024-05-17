@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+
+  if list.length
+    ul 
+      each item in list
+        li
+          a(href=item.url) #{item.name}
+            p #{item.amount}Qty #{item.price}€
+  else 
+    p There is no item.
