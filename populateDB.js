@@ -18,7 +18,11 @@ mongoose.set("strictQuery", false);
 
 const mongoDB = userArgs[0];
 
+//Main func execution
+
 main().catch((err) => console.log(err));
+
+//Main func and side funcs:
 
 async function main() {
   console.log("Debug: About to connect");
@@ -30,9 +34,7 @@ async function main() {
   mongoose.connection.close();
 }
 
-// We pass the index to the ...Create functions so that, for example,
-// genre[0] will always be the Fantasy genre, regardless of the order
-// in which the elements of promise.all's argument complete.
+//Functions to make single DB document:
 
 async function itemCreate(index, name, description, price, amount, category){
   const item = new Item({
@@ -56,6 +58,8 @@ async function categoryCreate(index, name, description){
   categories[index] = category;
   console.log("Added Category: " + name);
 };
+
+//Make multiple documents:
 
 async function createCategories(){
   console.log("Adding Categories!");
