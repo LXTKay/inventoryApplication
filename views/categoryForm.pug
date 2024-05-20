@@ -1,0 +1,33 @@
+extends layout 
+
+block content 
+  h1= title 
+
+  form(method="post") 
+    div.form-group
+      label(for="name") Name: 
+      input#name.form-control(
+        type="text" 
+        placeholder="Category Name" 
+        name="name"
+        required
+        value=(undefined===category ? '' : category.name)
+        minLength="4"
+        maxLength="100"
+      )
+      label(for="description") Description: 
+      input#description.form-control(
+        type="text" 
+        placeholder="This is a category" 
+        name="description" 
+        required 
+        value=(undefined===category ? "" : category.description)
+        minLength="5"
+        maxLength="400"
+      )
+    button.btn.btn-primary(type="submit") Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

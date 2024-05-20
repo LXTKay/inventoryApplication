@@ -12,7 +12,15 @@ exports.listAll = asyncHandler(async (req, res, next)=>{
 
 
 exports.showDetails = asyncHandler(async(req, res, next)=>{
-  res.send("Details to be implemented.")
+  const item = await Item.findById(req.params.id).populate("category").exec();
+
+  if (item === null) {
+    const err = new Error("Item not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("itemDetail", {item: item});
 })
 
 exports.createGet = asyncHandler(async (req,res,next)=>{

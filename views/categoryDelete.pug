@@ -1,0 +1,21 @@
+extends layout 
+
+block content 
+  h1 Delete #{category.name}
+
+  if itemList.length
+    p Remove the following items or change their category to delete this category: 
+    ul
+      for item in itemList 
+        li 
+          a(href=item.url) #{item.name}
+  else 
+    p Do you really want to delete #{category.name}?
+
+    form(method="post")
+      div.form-group
+        input#categoryid.form-control(
+          type="hidden"
+          name="categoryid"
+          value=category._id)
+      button.btn.btn-primary(type="submit") Delete
