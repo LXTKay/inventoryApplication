@@ -99,9 +99,49 @@ exports.deletePost = asyncHandler(async (req,res,next)=>{
 });
 
 exports.updateGet = asyncHandler(async (req,res,next)=>{
-  res.send("Category updateGet to be implemented.");
+  const category = await Category.findById(req.params.id).exec();
+
+  res.render("categoryForm", {
+    title: "Update Category",
+    category: category,
+  });
 });
 
-exports.updatePost = asyncHandler(async (req,res,next)=>{
-  res.send("Category updatePost to be implemented.");
-});
+exports.updatePost = [
+  body("name")
+  .trim()
+  .isLength({min: 4})
+  .withMessage("Name must have at least 4 characters")
+  .isLength({max: 100})
+  .withMessage("Name can have max. 100 characters")
+  .escape(),
+
+  body("description")
+  .trim()
+  .isLength({min: 5})
+  .withMessage("Description must have at least 5 characters")
+  .isLength({max: 400})
+  .withMessage("Description can have max. 400 characters")
+  .escape(),
+
+  asyncHandler(async (req,res,next)=>{
+    const errors = validationResult(req);
+
+    const category = new Category({
+      name: req.body.name,
+      description: req.body.description,
+      _id: req.params.id
+    });
+
+    if(!errors.isEmpty()){
+      res.render("categoryForm", {
+        title: "Update Category",
+        category: category,
+        errors: errors.array()
+      });
+    } else {
+      const updatedCategory = await Category.findByIdAndUpdate(req.params.id, category, {})
+      res.redirect(updatedCategory.url);
+    };
+  })
+];
