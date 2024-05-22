@@ -1,3 +1,4 @@
+require('dotenv').config();
 const asyncHandler = require("express-async-handler");
 const Category = require("../models/category");
 const Item = require("../models/item");
@@ -47,6 +48,11 @@ exports.createPost = [
   .isLength({max: 400})
   .withMessage("Description can have max. 400 characters")
   .escape(),
+
+  body("password")
+  .escape()
+  .equals(process.env.PW)
+  .withMessage("Wrong password"),
   
   asyncHandler(async (req,res,next)=>{
     const errors = validationResult(req);
@@ -81,22 +87,37 @@ exports.deleteGet = asyncHandler(async (req,res,next)=>{
   })
 });
 
-exports.deletePost = asyncHandler(async (req,res,next)=>{
-  const [category, itemList] = await Promise.all([
-    Category.findById(req.params.id).exec(),
-    Item.find({category: req.params.id}).exec()
-  ]);
+exports.deletePost = [
+  body("password")
+  .escape()
+  .equals(process.env.PW)
+  .withMessage("Wrong password"),
 
-  if(itemList.length > 0){
-    res.render("categoryDelete", {
-      category: category,
-      itemList: itemList
-    });
-  } else {
-    await Category.findByIdAndDelete(req.body.categoryid);
-    res.redirect("/categories");
-  }
-});
+  asyncHandler(async (req,res,next)=>{
+    const errors = validationResult(req);
+
+    const [category, itemList] = await Promise.all([
+      Category.findById(req.params.id).exec(),
+      Item.find({category: req.params.id}).exec()
+    ]);
+
+    if(itemList.length > 0){
+      res.render("categoryDelete", {
+        category: category,
+        itemList: itemList
+      });
+    } else if(!errors.isEmpty()) {
+      res.render("categoryDelete", {
+        category: category,
+        itemList: itemList,
+        passwordmessage: "Wrong password"
+      });
+    } else {
+      await Category.findByIdAndDelete(req.body.categoryid);
+      res.redirect("/categories");
+    }
+  })
+]
 
 exports.updateGet = asyncHandler(async (req,res,next)=>{
   const category = await Category.findById(req.params.id).exec();
@@ -123,6 +144,11 @@ exports.updatePost = [
   .isLength({max: 400})
   .withMessage("Description can have max. 400 characters")
   .escape(),
+
+  body("password")
+  .escape()
+  .equals(process.env.PW)
+  .withMessage("Wrong password"),
 
   asyncHandler(async (req,res,next)=>{
     const errors = validationResult(req);

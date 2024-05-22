@@ -12,4 +12,12 @@ block content
         value=item._id 
         name="itemid"
       )
+    .form-group 
+        label(for="password") Secred Admin Password
+        input#password.form-control(
+          name="password"
+          type="text"
+          required
+          placeholder=(placeholder=(passwordmessage === undefined ? "Insert secret admin password to make changes" : passwordmessage)
+        )
     button.btn.btn-primary(type="submit") Delete

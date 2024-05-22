@@ -23,7 +23,7 @@ app.set('view engine', 'pug');
 
 const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20,
+  max: 50,
 });
 app.use(limiter);
 

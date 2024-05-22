@@ -65,7 +65,16 @@ block content
         type="text"
         name="picture"
         placeholder="Insert image URL here"
-        value=(undefined===item ? "" : item.picture))
+        value=(undefined===item ? "" : item.picture)
+      )
+    .form-group 
+      label(for="password") Secred Admin Password
+      input#password.form-control(
+        name="password"
+        type="text"
+        required
+        placeholder="Insert secret admin password to make changes"
+      )
     button.btn.btn-primary(type="submit") Submit
 
 

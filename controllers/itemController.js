@@ -1,3 +1,4 @@
+require('dotenv').config();
 const asyncHandler = require("express-async-handler");
 const Item = require("../models/item");
 const Category = require("../models/category");
@@ -80,6 +81,11 @@ exports.createPost = [
   .isLength({min: 1})
   .escape(),
 
+  body("password")
+  .escape()
+  .equals(process.env.PW)
+  .withMessage("Wrong password"),
+
   asyncHandler(async (req,res,next)=>{
     const errors = validationResult(req);
 
@@ -114,11 +120,28 @@ exports.deleteGet = asyncHandler(async (req,res,next)=>{
   res.render("itemDelete", {item: item});
 });
 
-exports.deletePost = asyncHandler(async (req,res,next)=>{
-  await Item.findByIdAndDelete(req.body.itemid);
+exports.deletePost = [
+  body("password")
+  .escape()
+  .equals(process.env.PW)
+  .withMessage("Wrong password"),
 
-  res.redirect("/items");
-});
+  asyncHandler(async (req,res,next)=>{
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()){
+      res.render("itemDelete", {
+        item: item,
+        passwordmessage: "Wrong Password"
+      });
+    } else {
+      await Item.findByIdAndDelete(req.body.itemid);
+
+      res.redirect("/items");
+    }
+    
+})
+]
 
 exports.updateGet = asyncHandler(async (req,res,next)=>{
   const [item, categoryList] = await Promise.all([
@@ -180,6 +203,11 @@ exports.updatePost = [
   .trim()
   .isLength({min: 1})
   .escape(),
+
+  body("password")
+  .escape()
+  .equals(process.env.PW)
+  .withMessage("Wrong password"),
 
   asyncHandler(async (req,res,next)=>{
     const errors = validationResult(req);

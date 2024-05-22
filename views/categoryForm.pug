@@ -26,6 +26,14 @@ block content
         minLength="5"
         maxLength="400"
       )
+    .form-group 
+      label(for="password") Secred Admin Password
+      input#password.form-control(
+        name="password"
+        type="text"
+        required
+        placeholder="Insert secret admin password to make changes"
+      )
     button.btn.btn-primary(type="submit") Submit
 
   if errors
