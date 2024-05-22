@@ -130,6 +130,8 @@ exports.deletePost = [
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
+      const item = await Item.findById(req.params.id);
+      
       res.render("itemDelete", {
         item: item,
         passwordmessage: "Wrong Password"
